@@ -1,8 +1,10 @@
 # FCC Javascript Calculator
 
-## Online Demo - not yet functional
+The aim is to build a functioning calculator with javascript frontend-libararies.
 
-The aim is to build a functioning calculator with javascript frontend-libararies. The basic technologies used thus far are:
+## [Online Demo] - not yet functional
+
+ The basic technologies used thus far are:
 
 - HTML
 - CSS
