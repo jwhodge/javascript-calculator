@@ -145,16 +145,27 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      total: 100,
+      total: 0,
+      formula: "",
     };
+
+    this.setAppState = this.setAppState.bind(this);
+  }
+
+  setAppState(newState) {
+    console.log(newState);
+    this.setState({
+      total: newState,
+      formula: this.state.formula.concat(newState),
+    });
   }
 
   render() {
     return (
       <div className="App">
         <div className="wrapper">
-          <Display onScreen={this.state.total} />
-          <Input />
+          <Display total={this.state.total} formula={this.state.formula} />
+          <Input setAppState={this.setAppState} />
         </div>
       </div>
     );
@@ -164,7 +175,8 @@ class App extends React.Component {
 function Display(props) {
   return (
     <div className="Display" id="display">
-      {props.onScreen}
+      <div className="displayFormula">{props.formula}</div>
+      <div className="displayTotal">{props.total}</div>
     </div>
   );
 }
@@ -172,40 +184,29 @@ function Display(props) {
 class Input extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      input: 0,
-    };
-
-    this.stateSetter = this.stateSetter.bind(this);
-  }
-
-  stateSetter(newState) {
-    console.log(newState);
-    this.setState({
-      input: newState,
-    });
+    this.state = {};
   }
 
   render() {
     return (
       <div className="Input">
-        <Button keys={this.stateSetter} btnInfo={buttonMap[0]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[1]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[2]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[3]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[4]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[5]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[6]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[7]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[8]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[9]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[10]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[11]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[12]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[13]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[14]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[15]} />
-        <Button keys={this.stateSetter} btnInfo={buttonMap[16]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[0]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[1]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[2]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[3]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[4]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[5]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[6]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[7]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[8]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[9]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[10]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[11]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[12]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[13]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[14]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[15]} />
+        <Button keys={this.props.setAppState} btnInfo={buttonMap[16]} />
       </div>
     );
   }

@@ -17,6 +17,9 @@
 }
 
 .Display {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   color: orange;
   text-align: right;
   font-size: x-large;
@@ -25,6 +28,16 @@
   border-radius: 5px;
   padding: 50px;
   background-color: black;
+}
+
+.displayFormula {
+  padding: 5px;
+}
+
+.displayTotal {
+  padding: 5px;
+  color: white;
+  font-size: xx-large;
 }
 
 .Input {
