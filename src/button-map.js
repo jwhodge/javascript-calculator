@@ -1,7 +1,3 @@
-import React from "react";
-import "./App.css";
-import "./button-layout.css";
-
 const buttonMap = [
   { class: "btn", id: "seven", val: "7", display: "7", icon: "", jskeycode: 0 },
   { class: "btn", id: "eight", val: "8", display: "8", icon: "", jskeycode: 0 },
@@ -70,66 +66,3 @@ const buttonMap = [
     jskeycode: 0,
   },
 ];
-
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      total: 100,
-    };
-  }
-
-  render() {
-    return (
-      <div className="App">
-        <div className="wrapper">
-          <Display onScreen={this.state.total} />
-          <Input />
-        </div>
-      </div>
-    );
-  }
-}
-
-function Display(props) {
-  return (
-    <div className="Display" id="display">
-      {props.onScreen}
-    </div>
-  );
-}
-
-function Input() {
-  return (
-    <div className="Input">
-      <Button btnInfo={buttonMap[0]} />
-      <Button btnInfo={buttonMap[1]} />
-      <Button btnInfo={buttonMap[2]} />
-      <Button btnInfo={buttonMap[3]} />
-      <Button btnInfo={buttonMap[4]} />
-      <Button btnInfo={buttonMap[5]} />
-      <Button btnInfo={buttonMap[6]} />
-      <Button btnInfo={buttonMap[7]} />
-      <Button btnInfo={buttonMap[8]} />
-      <Button btnInfo={buttonMap[9]} />
-      <Button btnInfo={buttonMap[10]} />
-      <Button btnInfo={buttonMap[11]} />
-      <Button btnInfo={buttonMap[12]} />
-      <Button btnInfo={buttonMap[13]} />
-      <Button btnInfo={buttonMap[14]} />
-      <Button btnInfo={buttonMap[15]} />
-      <Button btnInfo={buttonMap[16]} />
-    </div>
-  );
-}
-
-function Button(props) {
-  const btnArr = props.btnInfo;
-  return (
-    <button className={btnArr.class} id={btnArr.id} value={btnArr.val}>
-      {btnArr.display}
-    </button>
-  );
-}
-
-export default App;
