@@ -3,22 +3,85 @@ import "./App.css";
 import "./button-layout.css";
 
 const buttonMap = [
-  { class: "btn", id: "seven", val: "7", display: "7", icon: "", jskeycode: 0 },
-  { class: "btn", id: "eight", val: "8", display: "8", icon: "", jskeycode: 0 },
-  { class: "btn", id: "nine", val: "9", display: "9", icon: "", jskeycode: 0 },
-  { class: "btn", id: "four", val: "4", display: "4", icon: "", jskeycode: 0 },
-  { class: "btn", id: "five", val: "5", display: "5", icon: "", jskeycode: 0 },
-  { class: "btn", id: "six", val: "6", display: "6", icon: "", jskeycode: 0 },
-  { class: "btn", id: "one", val: "1", display: "1", icon: "", jskeycode: 0 },
-  { class: "btn", id: "two", val: "2", display: "2", icon: "", jskeycode: 0 },
-  { class: "btn", id: "three", val: "3", display: "3", icon: "", jskeycode: 0 },
+  {
+    class: "btn",
+    id: "seven",
+    val: "7",
+    display: "7",
+    icon: "",
+    jskeycode: NaN,
+  },
+  {
+    class: "btn",
+    id: "eight",
+    val: "8",
+    display: "8",
+    icon: "",
+    jskeycode: NaN,
+  },
+  {
+    class: "btn",
+    id: "nine",
+    val: "9",
+    display: "9",
+    icon: "",
+    jskeycode: NaN,
+  },
+  {
+    class: "btn",
+    id: "four",
+    val: "4",
+    display: "4",
+    icon: "",
+    jskeycode: NaN,
+  },
+  {
+    class: "btn",
+    id: "five",
+    val: "5",
+    display: "5",
+    icon: "",
+    jskeycode: NaN,
+  },
+  {
+    class: "btn",
+    id: "six",
+    val: "6",
+    display: "6",
+    icon: "",
+    jskeycode: NaN,
+  },
+  {
+    class: "btn",
+    id: "one",
+    val: "1",
+    display: "1",
+    icon: "",
+    jskeycode: NaN,
+  },
+  {
+    class: "btn",
+    id: "two",
+    val: "2",
+    display: "2",
+    icon: "",
+    jskeycode: NaN,
+  },
+  {
+    class: "btn",
+    id: "three",
+    val: "3",
+    display: "3",
+    icon: "",
+    jskeycode: NaN,
+  },
   {
     class: "btn btn-dw",
     id: "zero",
     val: "0",
     display: "0",
     icon: "",
-    jskeycode: 0,
+    jskeycode: NaN,
   },
   {
     class: "btn btn-dw",
@@ -26,7 +89,7 @@ const buttonMap = [
     val: "AC",
     display: "AC",
     icon: "",
-    jskeycode: 0,
+    jskeycode: 46,
   },
   {
     class: "btn",
@@ -34,7 +97,7 @@ const buttonMap = [
     val: ".",
     display: ".",
     icon: "",
-    jskeycode: 0,
+    jskeycode: NaN,
   },
   {
     class: "btn",
@@ -42,7 +105,7 @@ const buttonMap = [
     val: "/",
     display: "/",
     icon: "",
-    jskeycode: 0,
+    jskeycode: NaN,
   },
   {
     class: "btn",
@@ -50,16 +113,23 @@ const buttonMap = [
     val: "*",
     display: "x",
     icon: "",
-    jskeycode: 0,
+    jskeycode: NaN,
   },
-  { class: "btn", id: "add", val: "+", display: "+", icon: "", jskeycode: 0 },
+  {
+    class: "btn",
+    id: "add",
+    val: "+",
+    display: "+",
+    icon: "",
+    jskeycode: NaN,
+  },
   {
     class: "btn",
     id: "subtract",
     val: "-",
     display: "-",
     icon: "",
-    jskeycode: 0,
+    jskeycode: NaN,
   },
   {
     class: "btn btn-dh",
@@ -67,7 +137,7 @@ const buttonMap = [
     val: "=",
     display: "=",
     icon: "",
-    jskeycode: 0,
+    jskeycode: 13,
   },
 ];
 
@@ -99,37 +169,88 @@ function Display(props) {
   );
 }
 
-function Input() {
-  return (
-    <div className="Input">
-      <Button btnInfo={buttonMap[0]} />
-      <Button btnInfo={buttonMap[1]} />
-      <Button btnInfo={buttonMap[2]} />
-      <Button btnInfo={buttonMap[3]} />
-      <Button btnInfo={buttonMap[4]} />
-      <Button btnInfo={buttonMap[5]} />
-      <Button btnInfo={buttonMap[6]} />
-      <Button btnInfo={buttonMap[7]} />
-      <Button btnInfo={buttonMap[8]} />
-      <Button btnInfo={buttonMap[9]} />
-      <Button btnInfo={buttonMap[10]} />
-      <Button btnInfo={buttonMap[11]} />
-      <Button btnInfo={buttonMap[12]} />
-      <Button btnInfo={buttonMap[13]} />
-      <Button btnInfo={buttonMap[14]} />
-      <Button btnInfo={buttonMap[15]} />
-      <Button btnInfo={buttonMap[16]} />
-    </div>
-  );
+class Input extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: 0,
+    };
+
+    this.stateSetter = this.stateSetter.bind(this);
+  }
+
+  stateSetter(newState) {
+    console.log(newState);
+    this.setState({
+      input: newState,
+    });
+  }
+
+  render() {
+    return (
+      <div className="Input">
+        <Button keys={this.stateSetter} btnInfo={buttonMap[0]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[1]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[2]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[3]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[4]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[5]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[6]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[7]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[8]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[9]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[10]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[11]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[12]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[13]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[14]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[15]} />
+        <Button keys={this.stateSetter} btnInfo={buttonMap[16]} />
+      </div>
+    );
+  }
 }
 
-function Button(props) {
-  const btnArr = props.btnInfo;
-  return (
-    <button className={btnArr.class} id={btnArr.id} value={btnArr.val}>
-      {btnArr.display}
-    </button>
-  );
+class Button extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.inputTrigger = this.inputTrigger.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyPress);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyPress);
+  }
+
+  handleKeyPress(e) {
+    let arg = this.props.btnInfo;
+    if (e.key === arg.val || e.keyCode === arg.jskeycode) {
+      this.props.keys(arg.val);
+    }
+  }
+
+  inputTrigger(e) {
+    this.props.keys(e.target.value);
+  }
+
+  render() {
+    const btnArr = this.props.btnInfo;
+    return (
+      <button
+        className={btnArr.class}
+        id={btnArr.id}
+        value={btnArr.val}
+        onClick={this.inputTrigger}
+      >
+        {btnArr.display}
+      </button>
+    );
+  }
 }
 
 export default App;
