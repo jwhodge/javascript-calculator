@@ -208,7 +208,12 @@ function digitCapacityGate(string, number) {
 
 function extractLastNumber(string, regex) {
   let arr = string.match(regex);
-  return arr[0];
+  console.log("push to arr", arr);
+  let x = parseFloat(arr[0], 10);
+  if (isNaN(x)) {
+    return "double op";
+  }
+  return x;
 }
 
 class App extends React.Component {
@@ -224,6 +229,7 @@ class App extends React.Component {
     this.setTotal = this.setTotal.bind(this);
   }
 
+  /* state update methods */
   setTotal(newTotal) {
     this.setState({
       total: newTotal,
@@ -267,8 +273,11 @@ class App extends React.Component {
         this.updateFormulaStr(newInput);
       }
     } else if (equals.test(newInput)) {
-      /* If equals runs the compute algorithm */
+      /* If equals updates array with number, adds = to str and runs the compute algorithm */
       console.log("equals");
+      this.updateFormulaArr(extractLastNumber(this.state.formulaStr, lastNum));
+      this.updateFormulaStr(newInput);
+      this.getAnswer(this.state.formulaArr);
     } else if (newInput === "AC") {
       /* resets the calculator */
       this.resetCalculation();
@@ -277,6 +286,29 @@ class App extends React.Component {
       console.log("input not valid");
     }
     console.log(this.state.formulaArr);
+  }
+
+  getAnswer(array) {
+    array.forEach((element, index) => {
+      this.computeImperative(array, element, index);
+    });
+  }
+
+  computeImperative(array, element, index) {
+    console.log("test", array, typeof element, index);
+    let answer = this.state.total;
+    if (typeof element === "number") {
+      console.log("do this number stuff");
+      if (index === 0) {
+        answer = doMaths("+", answer, element);
+      } else if (array[index - 2] === "double op" && array[index - 1] === "-") {
+        answer = doMaths(array[index - 3], answer, doMaths("*", -1, element));
+      } else {
+        answer = doMaths(array[index - 1], answer, element);
+      }
+    }
+    console.log(answer);
+    this.setTotal(answer);
   }
 
   render() {
@@ -296,9 +328,11 @@ class App extends React.Component {
 
 function Display(props) {
   return (
-    <div className="Display" id="display">
+    <div className="Display">
       <div className="displayformulaStr">{props.formulaStr}</div>
-      <div className="displayTotal">{props.total}</div>
+      <div className="displayTotal" id="display">
+        {props.total}
+      </div>
     </div>
   );
 }
