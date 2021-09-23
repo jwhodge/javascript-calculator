@@ -141,31 +141,153 @@ const buttonMap = [
   },
 ];
 
+const operator = /\+|-|\*|\//;
+const digit = /\d|\./;
+const equals = /=/;
+const lastNum = /(\d|\.)*$/;
+
+/* function checkInputType(input) {
+  console.log(input, typeof input);
+  if (operator.test(input)) {
+    console.log("operator");
+  } else if (digit.test(input)) {
+    console.log("digit");
+  } else if (equals.test(input)) {
+    console.log("equals");
+  } else if (input === "AC") {
+    console.log("Clear all and set to zero");
+  } else {
+    console.log("input not valid");
+  }
+} */
+
+function doMaths(op, num1, num2) {
+  switch (op) {
+    case "+":
+      return num1 + num2;
+    case "-":
+      return num1 - num2;
+    case "*":
+      return num1 * num2;
+    case "/":
+      return num1 / num2;
+    default:
+      console.log("Operator Error");
+  }
+}
+
+function checkDigits(input, string) {
+  switch (input) {
+    case "0":
+      if (
+        (string.length === 1 && string.endsWith("0")) ||
+        (string.endsWith("0") && string.endsWith("+", string.length - 1))
+      ) {
+        console.log("Leading Zeroes!!!");
+        return false;
+      }
+      return true;
+    case ".":
+      if (string.endsWith(".")) {
+        console.log("Double decimal!!!");
+        return false;
+      }
+      return true;
+    default:
+      return true;
+  }
+}
+
+function digitCapacityGate(string, number) {
+  if (string.length >= 18) {
+    console.log("Error - Digit Limit Reached");
+  } else if (number > "15digits?") {
+    console.log("Error - Digit Limit Reached");
+  }
+}
+
+function extractLastNumber(string, regex) {
+  let arr = string.match(regex);
+  return arr[0];
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       total: 0,
-      formula: "",
+      formulaStr: "",
+      formulaArr: [],
     };
 
-    this.setAppState = this.setAppState.bind(this);
+    this.manageInput = this.manageInput.bind(this);
+    this.setTotal = this.setTotal.bind(this);
   }
 
-  setAppState(newState) {
-    console.log(newState);
+  setTotal(newTotal) {
     this.setState({
-      total: newState,
-      formula: this.state.formula.concat(newState),
+      total: newTotal,
     });
+  }
+
+  resetCalculation() {
+    this.setState({
+      total: 0,
+      formulaStr: "",
+      formulaArr: [],
+    });
+  }
+
+  updateFormulaStr(addToStr) {
+    this.setState({
+      formulaStr: this.state.formulaStr.concat(addToStr),
+    });
+  }
+
+  updateFormulaArr(addToArr) {
+    this.setState({
+      formulaArr: [...this.state.formulaArr, addToArr],
+    });
+  }
+
+  /* This is the input routing function */
+  manageInput(newInput) {
+    console.log(newInput, typeof newInput);
+    /* if operator updates array with number and op. Adds op to str */
+    if (operator.test(newInput)) {
+      console.log("operator");
+      this.updateFormulaArr(extractLastNumber(this.state.formulaStr, lastNum));
+      this.updateFormulaArr(newInput);
+      this.updateFormulaStr(newInput);
+    } else if (digit.test(newInput)) {
+      /* if digit checks for leading zeros or repated decimal point then updates string */
+      console.log("digit");
+      let test = checkDigits(newInput, this.state.formulaStr);
+      if (test) {
+        this.updateFormulaStr(newInput);
+      }
+    } else if (equals.test(newInput)) {
+      /* If equals runs the compute algorithm */
+      console.log("equals");
+    } else if (newInput === "AC") {
+      /* resets the calculator */
+      this.resetCalculation();
+    } else {
+      /* fallback cosole error */
+      console.log("input not valid");
+    }
+    console.log(this.state.formulaArr);
   }
 
   render() {
     return (
       <div className="App">
         <div className="wrapper">
-          <Display total={this.state.total} formula={this.state.formula} />
-          <Input setAppState={this.setAppState} />
+          <Display
+            total={this.state.total}
+            formulaStr={this.state.formulaStr}
+          />
+          <Input manageInput={this.manageInput} />
         </div>
       </div>
     );
@@ -175,7 +297,7 @@ class App extends React.Component {
 function Display(props) {
   return (
     <div className="Display" id="display">
-      <div className="displayFormula">{props.formula}</div>
+      <div className="displayformulaStr">{props.formulaStr}</div>
       <div className="displayTotal">{props.total}</div>
     </div>
   );
@@ -190,23 +312,23 @@ class Input extends React.Component {
   render() {
     return (
       <div className="Input">
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[0]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[1]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[2]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[3]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[4]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[5]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[6]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[7]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[8]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[9]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[10]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[11]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[12]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[13]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[14]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[15]} />
-        <Button keys={this.props.setAppState} btnInfo={buttonMap[16]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[0]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[1]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[2]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[3]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[4]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[5]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[6]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[7]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[8]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[9]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[10]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[11]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[12]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[13]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[14]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[15]} />
+        <Button keys={this.props.manageInput} btnInfo={buttonMap[16]} />
       </div>
     );
   }
