@@ -146,21 +146,6 @@ const digit = /\d|\./;
 const equals = /=/;
 const lastNum = /(\d|\.)*$/;
 
-/* function checkInputType(input) {
-  console.log(input, typeof input);
-  if (operator.test(input)) {
-    console.log("operator");
-  } else if (digit.test(input)) {
-    console.log("digit");
-  } else if (equals.test(input)) {
-    console.log("equals");
-  } else if (input === "AC") {
-    console.log("Clear all and set to zero");
-  } else {
-    console.log("input not valid");
-  }
-} */
-
 function doMaths(op, num1, num2) {
   switch (op) {
     case "+":
@@ -216,10 +201,22 @@ function extractLastNumber(string, regex) {
   return x;
 }
 
+function extractDisplay(string, regex) {
+  console.log(string);
+  let arr = string.match(regex);
+  console.log("push to disp arr", arr);
+  let x = arr[0];
+  if (isNaN(x)) {
+    return "double op";
+  }
+  return x;
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      runningDisplay: "0",
       total: 0,
       formulaStr: "",
       formulaArr: [],
@@ -227,78 +224,109 @@ class App extends React.Component {
 
     this.manageInput = this.manageInput.bind(this);
     this.setTotal = this.setTotal.bind(this);
+    this.resetCalculation = this.resetCalculation.bind(this);
+    this.updateDisplay = this.updateDisplay.bind(this);
+    this.updateFormulaArr = this.updateFormulaArr.bind(this);
+    this.updateFormulaStr = this.updateFormulaStr.bind(this);
+    this.manageInput = this.manageInput.bind(this);
+    this.getAnswer = this.getAnswer.bind(this);
+    this.computeImmediate = this.computeImmediate.bind(this);
   }
 
   /* state update methods */
   setTotal(newTotal) {
-    this.setState({
-      total: newTotal,
+    this.setState(() => {
+      return { total: newTotal };
     });
   }
 
   resetCalculation() {
-    this.setState({
-      total: 0,
-      formulaStr: "",
-      formulaArr: [],
+    this.setState(() => {
+      return {
+        runningDisplay: "0",
+        total: 0,
+        formulaStr: "",
+        formulaArr: [],
+      };
+    });
+  }
+
+  updateDisplay(latest) {
+    this.setState(() => {
+      return {
+        runningDisplay: latest,
+      };
     });
   }
 
   updateFormulaStr(addToStr) {
-    this.setState({
-      formulaStr: this.state.formulaStr.concat(addToStr),
+    this.setState((state) => {
+      return { formulaStr: state.formulaStr.concat(addToStr) };
     });
   }
 
   updateFormulaArr(addToArr) {
-    this.setState({
-      formulaArr: [...this.state.formulaArr, addToArr],
+    this.setState((state) => {
+      return {
+        formulaArr: [...state.formulaArr, addToArr],
+      };
     });
   }
 
+  manageEquals = (addToArr) => {
+    this.setState({ formulaArr: [...this.state.formulaArr, addToArr] });
+    /* currently using a timeout version but need to make callback or didupdate work */
+    setTimeout(() => {
+      this.getAnswer(this.state.formulaArr);
+    }, 100);
+  };
+
   /* This is the input routing function */
   manageInput(newInput) {
-    console.log(newInput, typeof newInput);
     /* if operator updates array with number and op. Adds op to str */
     if (operator.test(newInput)) {
       console.log("operator");
       this.updateFormulaArr(extractLastNumber(this.state.formulaStr, lastNum));
       this.updateFormulaArr(newInput);
       this.updateFormulaStr(newInput);
+      this.updateDisplay(newInput);
     } else if (digit.test(newInput)) {
       /* if digit checks for leading zeros or repated decimal point then updates string */
       console.log("digit");
       let test = checkDigits(newInput, this.state.formulaStr);
       if (test) {
+        this.updateDisplay(
+          extractDisplay(this.state.formulaStr + newInput, lastNum)
+        );
         this.updateFormulaStr(newInput);
       }
     } else if (equals.test(newInput)) {
       /* If equals updates array with number, adds = to str and runs the compute algorithm */
       console.log("equals");
-      this.updateFormulaArr(extractLastNumber(this.state.formulaStr, lastNum));
+      this.manageEquals(extractLastNumber(this.state.formulaStr, lastNum));
+      /* this.updateFormulaArr(extractLastNumber(this.state.formulaStr, lastNum)); */
       this.updateFormulaStr(newInput);
-      this.getAnswer(this.state.formulaArr);
+      /* this.getAnswer(this.state.formulaArr); */
     } else if (newInput === "AC") {
       /* resets the calculator */
       this.resetCalculation();
     } else {
-      /* fallback cosole error */
+      /* fallback console error */
       console.log("input not valid");
     }
-    console.log(this.state.formulaArr);
   }
 
   getAnswer(array) {
     array.forEach((element, index) => {
-      this.computeImperative(array, element, index);
+      this.computeImmediate(array, element, index);
     });
+    this.updateDisplay(this.state.total);
   }
 
-  computeImperative(array, element, index) {
+  computeImmediate(array, element, index) {
     console.log("test", array, typeof element, index);
     let answer = this.state.total;
     if (typeof element === "number") {
-      console.log("do this number stuff");
       if (index === 0) {
         answer = doMaths("+", answer, element);
       } else if (array[index - 2] === "double op" && array[index - 1] === "-") {
@@ -307,7 +335,7 @@ class App extends React.Component {
         answer = doMaths(array[index - 1], answer, element);
       }
     }
-    console.log(answer);
+    console.log("imperative out", answer);
     this.setTotal(answer);
   }
 
@@ -316,8 +344,9 @@ class App extends React.Component {
       <div className="App">
         <div className="wrapper">
           <Display
-            total={this.state.total}
+            runDisplay={this.state.runningDisplay}
             formulaStr={this.state.formulaStr}
+            formulaArr={this.state.formulaArr}
           />
           <Input manageInput={this.manageInput} />
         </div>
@@ -329,9 +358,12 @@ class App extends React.Component {
 function Display(props) {
   return (
     <div className="Display">
-      <div className="displayformulaStr">{props.formulaStr}</div>
+      <div className="displayFormulaStr">{props.formulaStr}</div>
       <div className="displayTotal" id="display">
-        {props.total}
+        {props.runDisplay}
+      </div>
+      <div className="displayFormulaArr" id="display">
+        {props.formulaArr}
       </div>
     </div>
   );
@@ -379,9 +411,11 @@ class Button extends React.Component {
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyPress);
+    /* document.addEventListener("click", this.inputTrigger); */
   }
   componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyPress);
+    /* document.removeEventListener("click", this.inputTrigger); */
   }
 
   handleKeyPress(e) {
@@ -392,6 +426,7 @@ class Button extends React.Component {
   }
 
   inputTrigger(e) {
+    e.stopPropagation();
     this.props.keys(e.target.value);
   }
 

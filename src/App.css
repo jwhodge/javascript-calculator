@@ -36,6 +36,12 @@
   padding: 5px;
 }
 
+.displayFormulaArr {
+  color: transparent;
+  max-width: 2px;
+  max-height: 1px;
+}
+
 .displayTotal {
   padding: 5px;
   color: white;
