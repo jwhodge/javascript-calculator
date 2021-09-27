@@ -185,11 +185,10 @@ function checkDigits(input, string) {
 }
 
 function digitCapacityGate(string, number) {
-  if (string.length >= 18) {
-    console.log("Error - Digit Limit Reached");
-  } else if (number > "15digits?") {
-    console.log("Error - Digit Limit Reached");
+  if (string.length >= 24 || number.toString().length > 20) {
+    return "Error - Limit Reached";
   }
+  return number;
 }
 
 function extractLastNumber(string, regex) {
@@ -336,6 +335,9 @@ class App extends React.Component {
       /* fallback console error */
       console.log("input not valid");
     }
+    /*     this.updateDisplay(
+      digitCapacityGate(this.state.formulaStr, this.state.total)
+    ); */
   }
 
   getAnswer(array) {

@@ -7,6 +7,7 @@
   background-color: rgba(78, 81, 87, 0.5);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.125);
+  box-shadow: 10px 5px 15px black;
 }
 
 .wrapper {
@@ -21,6 +22,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  overflow: hidden;
   color: orange;
   text-align: right;
   font-size: x-large;
@@ -32,7 +34,6 @@
 }
 
 .displayFormulaStr {
-  max-width: 300px;
   padding: 5px;
 }
 
@@ -58,6 +59,7 @@
 
 button {
   color: white;
+  font-family: inherit;
   font-size: x-large;
   place-self: center;
   width: 100px;
@@ -77,4 +79,26 @@ button:hover {
 }
 .btn-dh {
   height: 205px;
+}
+
+@media only screen and (max-width: 450px) {
+  .App {
+    max-width: 350px;
+  }
+  .wrapper {
+    max-width: 320px;
+  }
+  .Display {
+    padding: 20px;
+  }
+  button {
+    width: 60px;
+    height: 60px;
+  }
+  .btn-dh {
+    height: 125px;
+  }
+  .btn-dw {
+    width: 125px;
+  }
 }
