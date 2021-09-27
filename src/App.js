@@ -145,6 +145,7 @@ const operator = /\+|-|\*|\//;
 const digit = /\d|\./;
 const equals = /=/;
 const lastNum = /(\d|\.)*$/;
+const decimalCheck = /(\d*\.\d*)$/;
 
 function doMaths(op, num1, num2) {
   switch (op) {
@@ -173,7 +174,7 @@ function checkDigits(input, string) {
       }
       return true;
     case ".":
-      if (string.endsWith(".")) {
+      if (string.endsWith(".") || decimalCheck.test(string)) {
         console.log("Double decimal!!!");
         return false;
       }
@@ -220,6 +221,7 @@ class App extends React.Component {
       total: 0,
       formulaStr: "",
       formulaArr: [],
+      evaluated: false,
     };
 
     this.manageInput = this.manageInput.bind(this);
@@ -247,6 +249,7 @@ class App extends React.Component {
         total: 0,
         formulaStr: "",
         formulaArr: [],
+        evaluated: false,
       };
     });
   }
@@ -261,7 +264,7 @@ class App extends React.Component {
 
   updateFormulaStr(addToStr) {
     this.setState((state) => {
-      return { formulaStr: state.formulaStr.concat(addToStr) };
+      return { formulaStr: state.formulaStr + addToStr };
     });
   }
 
@@ -274,23 +277,44 @@ class App extends React.Component {
   }
 
   manageEquals = (addToArr) => {
-    this.setState({ formulaArr: [...this.state.formulaArr, addToArr] });
-    /* currently using a timeout version but need to make callback or didupdate work */
-    setTimeout(() => {
+    this.setState({ formulaArr: [...this.state.formulaArr, addToArr] }, () => {
       this.getAnswer(this.state.formulaArr);
-    }, 100);
+    });
+    this.setState({
+      evaluated: true,
+    });
   };
 
   /* This is the input routing function */
   manageInput(newInput) {
     /* if operator updates array with number and op. Adds op to str */
     if (operator.test(newInput)) {
-      console.log("operator");
-      this.updateFormulaArr(extractLastNumber(this.state.formulaStr, lastNum));
+      if (this.state.evaluated) {
+        console.log("operator after equals");
+        this.setState(
+          {
+            formulaArr: [this.state.total],
+            formulaStr: this.state.total,
+            evaluated: false,
+          },
+          () => {
+            this.setTotal(0);
+          }
+        );
+      } else {
+        console.log("operator");
+        this.updateFormulaArr(
+          extractLastNumber(this.state.formulaStr, lastNum)
+        );
+      }
       this.updateFormulaArr(newInput);
       this.updateFormulaStr(newInput);
       this.updateDisplay(newInput);
     } else if (digit.test(newInput)) {
+      if (this.state.evaluated) {
+        console.log("digit after equals");
+        this.resetCalculation();
+      }
       /* if digit checks for leading zeros or repated decimal point then updates string */
       console.log("digit");
       let test = checkDigits(newInput, this.state.formulaStr);
@@ -304,9 +328,7 @@ class App extends React.Component {
       /* If equals updates array with number, adds = to str and runs the compute algorithm */
       console.log("equals");
       this.manageEquals(extractLastNumber(this.state.formulaStr, lastNum));
-      /* this.updateFormulaArr(extractLastNumber(this.state.formulaStr, lastNum)); */
       this.updateFormulaStr(newInput);
-      /* this.getAnswer(this.state.formulaArr); */
     } else if (newInput === "AC") {
       /* resets the calculator */
       this.resetCalculation();
@@ -317,15 +339,18 @@ class App extends React.Component {
   }
 
   getAnswer(array) {
+    let count = this.state.total;
     array.forEach((element, index) => {
-      this.computeImmediate(array, element, index);
+      let x = this.computeImmediate(array, element, index, count);
+      count = x;
     });
-    this.updateDisplay(this.state.total);
+    this.setTotal(count);
+    this.updateDisplay(count);
   }
 
-  computeImmediate(array, element, index) {
+  computeImmediate(array, element, index, count) {
     console.log("test", array, typeof element, index);
-    let answer = this.state.total;
+    let answer = count;
     if (typeof element === "number") {
       if (index === 0) {
         answer = doMaths("+", answer, element);
@@ -336,7 +361,7 @@ class App extends React.Component {
       }
     }
     console.log("imperative out", answer);
-    this.setTotal(answer);
+    return answer;
   }
 
   render() {
