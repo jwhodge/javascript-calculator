@@ -2,7 +2,7 @@
 
 The aim is to build a functioning calculator with javascript frontend-libararies.
 
-## [Online Demo] - not yet functional
+## [Online Demo](https://jwhodge.github.io/javascript-calculator/)
 
  The basic technologies used thus far are:
 
